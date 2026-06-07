@@ -562,11 +562,45 @@
     const next = Math.max(0, current + delta);
     valEl.textContent = next;
     calcProducts();
+    saveState();
   }
 
-  // Set today's date
+  // ── localStorage persistence ──────────────────────────────
+  const STORAGE_KEY = 'shokz-tracker-v1';
+
+  function saveState() {
+    const state = {
+      date: document.getElementById('date').value,
+      shiftTime: document.getElementById('shiftTime').value,
+      revenue: Array.from(document.querySelectorAll('.rev')).map(el => el.value),
+      units: Array.from(document.querySelectorAll('.stepper-val.units')).map(el => el.textContent),
+      gsp: Array.from(document.querySelectorAll('.stepper-val.gsp')).map(el => el.textContent),
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function loadState() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    try {
+      const s = JSON.parse(raw);
+      if (s.date) document.getElementById('date').value = s.date;
+      if (s.shiftTime) document.getElementById('shiftTime').value = s.shiftTime;
+      const revEls = document.querySelectorAll('.rev');
+      (s.revenue || []).forEach((v, i) => { if (revEls[i]) revEls[i].value = v; });
+      const unitEls = document.querySelectorAll('.stepper-val.units');
+      (s.units || []).forEach((v, i) => { if (unitEls[i]) unitEls[i].textContent = v; });
+      const gspEls = document.querySelectorAll('.stepper-val.gsp');
+      (s.gsp || []).forEach((v, i) => { if (gspEls[i]) gspEls[i].textContent = v; });
+      return true;
+    } catch { return false; }
+  }
+
+  // Set today's date (only if nothing saved)
   const dateInput = document.getElementById('date');
-  dateInput.value = new Date().toISOString().split('T')[0];
+  if (!loadState()) {
+    dateInput.value = new Date().toISOString().split('T')[0];
+  }
 
   function calcRevenue() {
     const inputs = document.querySelectorAll('.rev');
@@ -586,7 +620,9 @@
     return { units, gsp };
   }
 
-  document.querySelectorAll('.rev').forEach(el => el.addEventListener('input', calcRevenue));
+  document.querySelectorAll('.rev').forEach(el => el.addEventListener('input', () => { calcRevenue(); saveState(); }));
+  document.getElementById('date').addEventListener('change', saveState);
+  document.getElementById('shiftTime').addEventListener('input', saveState);
 
   function formatDate(val) {
     if (!val) return '—';
@@ -661,6 +697,7 @@ ${productLines}
 
   function resetAll() {
     if (!confirm('Reset all fields for a new day?')) return;
+    localStorage.removeItem(STORAGE_KEY);
     document.getElementById('date').value = new Date().toISOString().split('T')[0];
     document.getElementById('shiftTime').value = '';
     document.querySelectorAll('.rev').forEach(i => i.value = 0);
@@ -674,7 +711,7 @@ ${productLines}
     if (e.target === e.currentTarget) closeModal();
   });
 
-  // Init
+  // Init — recalculate totals after state is loaded
   calcRevenue();
   calcProducts();
 </script>
