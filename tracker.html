@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shokz VPL Daily Performance Tracker</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #0a0a0a;
+    color: #e8e8e8;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    padding: 28px 0 24px;
+    border-bottom: 2px solid #1e6fff;
+    margin-bottom: 28px;
+  }
+
+  header h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #fff;
+    text-transform: uppercase;
+  }
+
+  header p {
+    font-size: 0.75rem;
+    color: #888;
+    letter-spacing: 0.12em;
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+
+  .meta-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .field-group label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: #888;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .field-group input {
+    width: 100%;
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    color: #fff;
+    padding: 9px 12px;
+    font-size: 0.9rem;
+    transition: border-color 0.15s;
+  }
+
+  .field-group input:focus {
+    outline: none;
+    border-color: #1e6fff;
+  }
+
+  section {
+    background: #111;
+    border: 1px solid #1e1e1e;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  section h2 {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #1e6fff;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  /* Revenue rows */
+  .revenue-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  .revenue-row:last-child { border-bottom: none; }
+
+  .revenue-row label {
+    font-size: 0.82rem;
+    color: #bbb;
+  }
+
+  .revenue-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .revenue-input-wrap span {
+    color: #555;
+    font-size: 0.9rem;
+  }
+
+  .revenue-row input {
+    width: 100px;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 5px;
+    color: #fff;
+    padding: 6px 10px;
+    font-size: 0.9rem;
+    text-align: right;
+    transition: border-color 0.15s;
+  }
+
+  .revenue-row input:focus {
+    outline: none;
+    border-color: #1e6fff;
+  }
+
+  .total-revenue-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 14px;
+    margin-top: 4px;
+    border-top: 2px solid #1e6fff;
+  }
+
+  .total-revenue-row span:first-child {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #1e6fff;
+    text-transform: uppercase;
+  }
+
+  .total-revenue-row .total-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  /* Product grid */
+  .product-header {
+    display: grid;
+    grid-template-columns: 1fr 120px 120px;
+    gap: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #222;
+    margin-bottom: 4px;
+  }
+
+  .product-header span {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #555;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .product-header span:first-child { text-align: left; }
+
+  .product-row {
+    display: grid;
+    grid-template-columns: 1fr 120px 120px;
+    gap: 10px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #181818;
+  }
+
+  .product-row:last-child { border-bottom: none; }
+
+  .product-name {
+    font-size: 0.85rem;
+    color: #ddd;
+    font-weight: 500;
+  }
+
+  /* Stepper control */
+  .stepper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .stepper button {
+    background: #1a1a1a;
+    border: none;
+    color: #aaa;
+    font-size: 1.1rem;
+    line-height: 1;
+    width: 30px;
+    height: 34px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.12s, color 0.12s;
+    user-select: none;
+  }
+
+  .stepper button:hover { background: #252525; color: #fff; }
+  .stepper button:active { background: #2e2e2e; }
+
+  .stepper button.minus:hover { color: #f87171; }
+  .stepper button.plus:hover { color: #4ade80; }
+
+  .stepper .stepper-val {
+    flex: 1;
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #fff;
+    background: #141414;
+    border-left: 1px solid #2a2a2a;
+    border-right: 1px solid #2a2a2a;
+    height: 34px;
+    line-height: 34px;
+    min-width: 0;
+  }
+
+  .stepper.gsp-stepper .stepper-val { color: #4ade80; }
+  .stepper.gsp-stepper { border-color: #1a3a1a; }
+  .stepper.gsp-stepper button { background: #111; }
+  .stepper.gsp-stepper button:hover { background: #1a2a1a; }
+
+  /* Shift totals */
+  .totals-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .total-card {
+    background: #0d0d0d;
+    border: 1px solid #222;
+    border-radius: 8px;
+    padding: 14px;
+    text-align: center;
+  }
+
+  .total-card .card-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #666;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .total-card .card-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .total-card.blue .card-value { color: #1e6fff; }
+  .total-card.green .card-value { color: #22c55e; }
+
+  /* Export button */
+  .export-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: #1e6fff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.15s, transform 0.1s;
+  }
+
+  .export-btn:hover { background: #1557d4; }
+  .export-btn:active { transform: scale(0.99); }
+
+  .reset-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    color: #555;
+    border: 1px solid #222;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .reset-btn:hover { color: #e55; border-color: #e55; }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    padding: 24px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .modal h3 {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #1e6fff;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .modal textarea {
+    flex: 1;
+    background: #0d0d0d;
+    border: 1px solid #222;
+    border-radius: 6px;
+    color: #e8e8e8;
+    font-family: 'Courier New', monospace;
+    font-size: 0.78rem;
+    line-height: 1.6;
+    padding: 14px;
+    resize: none;
+    min-height: 320px;
+  }
+
+  .modal-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .modal-actions button {
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    transition: background 0.15s;
+  }
+
+  .btn-copy {
+    background: #1e6fff;
+    color: #fff;
+  }
+
+  .btn-copy:hover { background: #1557d4; }
+
+  .btn-close {
+    background: #222;
+    color: #aaa;
+  }
+
+  .btn-close:hover { background: #2a2a2a; }
+
+  .copied-flash {
+    display: none;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #22c55e;
+    margin-top: 8px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>Shokz VPL Daily Performance Tracker</h1>
+    <p>Product &amp; Protection Tally Matrix</p>
+  </header>
+
+  <div class="meta-row">
+    <div class="field-group">
+      <label>Date</label>
+      <input type="date" id="date">
+    </div>
+    <div class="field-group">
+      <label>Shift Time</label>
+      <input type="text" id="shiftTime" placeholder="e.g. 10:00 AM – 09:00 PM">
+    </div>
+  </div>
+
+  <!-- Revenue -->
+  <section>
+    <h2>Hourly Revenue Tracking</h2>
+    <div class="revenue-row">
+      <label>10:00 AM – 12:00 PM</label>
+      <div class="revenue-input-wrap"><span>$</span><input type="number" class="rev" id="r1" value="0" min="0" step="0.01"></div>
+    </div>
+    <div class="revenue-row">
+      <label>12:00 PM – 02:00 PM</label>
+      <div class="revenue-input-wrap"><span>$</span><input type="number" class="rev" id="r2" value="0" min="0" step="0.01"></div>
+    </div>
+    <div class="revenue-row">
+      <label>02:00 PM – 04:00 PM</label>
+      <div class="revenue-input-wrap"><span>$</span><input type="number" class="rev" id="r3" value="0" min="0" step="0.01"></div>
+    </div>
+    <div class="revenue-row">
+      <label>04:00 PM – 06:00 PM</label>
+      <div class="revenue-input-wrap"><span>$</span><input type="number" class="rev" id="r4" value="0" min="0" step="0.01"></div>
+    </div>
+    <div class="revenue-row">
+      <label>06:00 PM – 08:00 PM</label>
+      <div class="revenue-input-wrap"><span>$</span><input type="number" class="rev" id="r5" value="0" min="0" step="0.01"></div>
+    </div>
+    <div class="revenue-row">
+      <label>08:00 PM – 09:00 PM</label>
+      <div class="revenue-input-wrap"><span>$</span><input type="number" class="rev" id="r6" value="0" min="0" step="0.01"></div>
+    </div>
+    <div class="total-revenue-row">
+      <span>Daily Total Revenue</span>
+      <span class="total-value" id="dailyTotal">$0.00</span>
+    </div>
+  </section>
+
+  <!-- Products -->
+  <section>
+    <h2>Product &amp; Protection Tally Matrix</h2>
+    <div class="product-header">
+      <span>Product</span>
+      <span>Units Sold</span>
+      <span>GSP</span>
+    </div>
+
+    <div id="productList">
+      <!-- rows injected by JS -->
+    </div>
+  </section>
+
+  <!-- Shift Totals -->
+  <section>
+    <h2>Shift Totals</h2>
+    <div class="totals-grid">
+      <div class="total-card blue">
+        <span class="card-label">Total Units Sold</span>
+        <span class="card-value" id="totalUnits">0</span>
+      </div>
+      <div class="total-card green">
+        <span class="card-label">Total GSP Attached</span>
+        <span class="card-value" id="totalGSP">0</span>
+      </div>
+      <div class="total-card">
+        <span class="card-label">Total Shokz Revenue</span>
+        <span class="card-value" id="totalRevenue">$0.00</span>
+      </div>
+    </div>
+  </section>
+
+  <button class="export-btn" onclick="openExport()">Export Day Summary</button>
+  <button class="reset-btn" onclick="resetAll()">Reset All Fields</button>
+
+</div>
+
+<!-- Export Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3>Day Summary — Ready to Forward</h3>
+    <textarea id="exportText" readonly></textarea>
+    <div class="modal-actions">
+      <button class="btn-copy" onclick="copyText()">Copy to Clipboard</button>
+      <button class="btn-close" onclick="closeModal()">Close</button>
+    </div>
+    <div class="copied-flash" id="copiedFlash">Copied!</div>
+  </div>
+</div>
+
+<script>
+  const PRODUCTS = [
+    "OpenFit Air",
+    "OpenFit 2+",
+    "OpenFit Pro",
+    "OpenRun Pro 2",
+    "OpenRun Pro 2 Mini",
+    "OpenRun / OpenRun Mini",
+    "OpenSwim Pro",
+    "OpenComm 2",
+    "OpenDots ONE",
+    "OpenDots 2",
+    "OpenDots Air",
+  ];
+
+  // Build product rows with stepper controls
+  const list = document.getElementById('productList');
+  PRODUCTS.forEach((name, i) => {
+    const row = document.createElement('div');
+    row.className = 'product-row';
+    row.innerHTML = `
+      <span class="product-name">${name}</span>
+      <div class="stepper" data-type="units" data-idx="${i}">
+        <button class="minus" onclick="step(this,-1)">−</button>
+        <span class="stepper-val units" data-idx="${i}">0</span>
+        <button class="plus" onclick="step(this,1)">+</button>
+      </div>
+      <div class="stepper gsp-stepper" data-type="gsp" data-idx="${i}">
+        <button class="minus" onclick="step(this,-1)">−</button>
+        <span class="stepper-val gsp" data-idx="${i}">0</span>
+        <button class="plus" onclick="step(this,1)">+</button>
+      </div>
+    `;
+    list.appendChild(row);
+  });
+
+  function step(btn, delta) {
+    const stepper = btn.closest('.stepper');
+    const valEl = stepper.querySelector('.stepper-val');
+    const current = parseInt(valEl.textContent) || 0;
+    const next = Math.max(0, current + delta);
+    valEl.textContent = next;
+    calcProducts();
+  }
+
+  // Set today's date
+  const dateInput = document.getElementById('date');
+  dateInput.value = new Date().toISOString().split('T')[0];
+
+  function calcRevenue() {
+    const inputs = document.querySelectorAll('.rev');
+    let total = 0;
+    inputs.forEach(i => total += parseFloat(i.value) || 0);
+    document.getElementById('dailyTotal').textContent = '$' + total.toFixed(2);
+    document.getElementById('totalRevenue').textContent = '$' + total.toFixed(2);
+    return total;
+  }
+
+  function calcProducts() {
+    let units = 0, gsp = 0;
+    document.querySelectorAll('.stepper-val.units').forEach(el => units += parseInt(el.textContent) || 0);
+    document.querySelectorAll('.stepper-val.gsp').forEach(el => gsp += parseInt(el.textContent) || 0);
+    document.getElementById('totalUnits').textContent = units;
+    document.getElementById('totalGSP').textContent = gsp;
+    return { units, gsp };
+  }
+
+  document.querySelectorAll('.rev').forEach(el => el.addEventListener('input', calcRevenue));
+
+  function formatDate(val) {
+    if (!val) return '—';
+    const [y, m, d] = val.split('-');
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${months[parseInt(m)-1]} ${parseInt(d)}, ${y}`;
+  }
+
+  function openExport() {
+    const date = formatDate(document.getElementById('date').value);
+    const shift = document.getElementById('shiftTime').value || '—';
+    const revenue = calcRevenue();
+    const { units, gsp } = calcProducts();
+
+    const slots = ['10:00 AM – 12:00 PM','12:00 PM – 02:00 PM','02:00 PM – 04:00 PM',
+                   '04:00 PM – 06:00 PM','06:00 PM – 08:00 PM','08:00 PM – 09:00 PM'];
+    const revInputs = document.querySelectorAll('.rev');
+    const unitInputs = document.querySelectorAll('.stepper-val.units');
+    const gspInputs = document.querySelectorAll('.stepper-val.gsp');
+
+    let revenueLines = '';
+    slots.forEach((s, i) => {
+      const val = parseFloat(revInputs[i].value) || 0;
+      revenueLines += `  ${s}: $${val.toFixed(2)}\n`;
+    });
+
+    let productLines = '';
+    PRODUCTS.forEach((name, i) => {
+      const u = parseInt(unitInputs[i].textContent) || 0;
+      const g = parseInt(gspInputs[i].textContent) || 0;
+      if (u > 0 || g > 0) {
+        productLines += `  ${name}: ${u} unit${u !== 1 ? 's' : ''}${g > 0 ? `, ${g} GSP` : ''}\n`;
+      }
+    });
+
+    if (!productLines) productLines = '  No products sold.\n';
+
+    const text =
+`SHOKZ VPL DAILY PERFORMANCE TRACKER
+Date: ${date}
+Shift: ${shift}
+
+── HOURLY REVENUE ──────────────────
+${revenueLines}
+  DAILY TOTAL: $${revenue.toFixed(2)}
+
+── PRODUCTS SOLD ───────────────────
+${productLines}
+── SHIFT TOTALS ────────────────────
+  Total Units Sold:    ${units}
+  Total GSP Attached:  ${gsp}
+  Total Shokz Revenue: $${revenue.toFixed(2)}`;
+
+    document.getElementById('exportText').value = text;
+    document.getElementById('modal').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('open');
+    document.getElementById('copiedFlash').style.display = 'none';
+  }
+
+  function copyText() {
+    const ta = document.getElementById('exportText');
+    ta.select();
+    navigator.clipboard.writeText(ta.value).then(() => {
+      const flash = document.getElementById('copiedFlash');
+      flash.style.display = 'block';
+      setTimeout(() => flash.style.display = 'none', 2000);
+    });
+  }
+
+  function resetAll() {
+    if (!confirm('Reset all fields for a new day?')) return;
+    document.getElementById('date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('shiftTime').value = '';
+    document.querySelectorAll('.rev').forEach(i => i.value = 0);
+    document.querySelectorAll('.stepper-val').forEach(el => el.textContent = 0);
+    calcRevenue();
+    calcProducts();
+  }
+
+  // Click outside modal to close
+  document.getElementById('modal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeModal();
+  });
+
+  // Init
+  calcRevenue();
+  calcProducts();
+</script>
+</body>
+</html>
