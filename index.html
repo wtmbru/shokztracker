@@ -95,12 +95,13 @@
 
   /* Revenue rows */
   .revenue-row {
-    display: grid;
-    grid-template-columns: 1fr auto;
+    display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 12px;
-    padding: 8px 0;
+    padding: 10px 0;
     border-bottom: 1px solid #1a1a1a;
+    flex-wrap: wrap;
   }
 
   .revenue-row:last-child { border-bottom: none; }
@@ -108,35 +109,93 @@
   .revenue-row label {
     font-size: 0.82rem;
     color: #bbb;
+    flex-shrink: 0;
+    min-width: 150px;
   }
 
-  .revenue-input-wrap {
+  .revenue-right {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 8px;
+    flex: 1;
+    justify-content: flex-end;
   }
 
-  .revenue-input-wrap span {
-    color: #555;
-    font-size: 0.9rem;
-  }
-
-  .revenue-row input {
-    width: 100px;
-    background: #1a1a1a;
-    border: 1px solid #2a2a2a;
-    border-radius: 5px;
+  /* Running total display */
+  .rev-total {
+    font-size: 1rem;
+    font-weight: 700;
     color: #fff;
-    padding: 6px 10px;
+    min-width: 72px;
+    text-align: right;
+  }
+
+  /* Add amount input + button */
+  .rev-add-wrap {
+    display: flex;
+    align-items: center;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .rev-add-wrap .dollar {
+    background: #1a1a1a;
+    color: #555;
+    font-size: 0.85rem;
+    padding: 0 6px 0 8px;
+    height: 34px;
+    line-height: 34px;
+    border-right: 1px solid #2a2a2a;
+    flex-shrink: 0;
+  }
+
+  .rev-add-wrap input {
+    width: 80px;
+    background: #1a1a1a;
+    border: none;
+    color: #fff;
+    padding: 6px 8px;
     font-size: 0.9rem;
     text-align: right;
-    transition: border-color 0.15s;
+    outline: none;
+    height: 34px;
+    -moz-appearance: textfield;
   }
 
-  .revenue-row input:focus {
-    outline: none;
-    border-color: #1e6fff;
+  .rev-add-wrap input::-webkit-outer-spin-button,
+  .rev-add-wrap input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  .rev-add-btn {
+    background: #1e6fff;
+    border: none;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+    flex-shrink: 0;
+    border-left: 1px solid #1557d4;
+    transition: background 0.12s;
   }
+
+  .rev-add-btn:hover { background: #1557d4; }
+  .rev-add-btn:active { background: #1044b0; }
+
+  .rev-clear-btn {
+    background: transparent;
+    border: none;
+    color: #444;
+    font-size: 0.75rem;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+    transition: color 0.12s;
+    flex-shrink: 0;
+  }
+
+  .rev-clear-btn:hover { color: #f87171; }
 
   .total-revenue-row {
     display: flex;
@@ -438,30 +497,85 @@
   <!-- Revenue -->
   <section>
     <h2>Hourly Revenue Tracking</h2>
+
     <div class="revenue-row">
       <label>10:00 AM – 12:00 PM</label>
-      <div class="revenue-input-wrap"><span>$</span><input type="number" class="rev" id="r1" value="0" min="0" step="0.01"></div>
+      <div class="revenue-right">
+        <span class="rev-total" id="rt1">$0.00</span>
+        <div class="rev-add-wrap">
+          <span class="dollar">$</span>
+          <input type="number" class="rev-add-input" id="ra1" min="0" step="0.01" placeholder="0.00">
+          <button class="rev-add-btn" onclick="addRevenue(1)">+</button>
+        </div>
+        <button class="rev-clear-btn" onclick="clearRevenue(1)" title="Clear slot">✕</button>
+      </div>
     </div>
+
     <div class="revenue-row">
       <label>12:00 PM – 02:00 PM</label>
-      <div class="revenue-input-wrap"><span>$</span><input type="number" class="rev" id="r2" value="0" min="0" step="0.01"></div>
+      <div class="revenue-right">
+        <span class="rev-total" id="rt2">$0.00</span>
+        <div class="rev-add-wrap">
+          <span class="dollar">$</span>
+          <input type="number" class="rev-add-input" id="ra2" min="0" step="0.01" placeholder="0.00">
+          <button class="rev-add-btn" onclick="addRevenue(2)">+</button>
+        </div>
+        <button class="rev-clear-btn" onclick="clearRevenue(2)" title="Clear slot">✕</button>
+      </div>
     </div>
+
     <div class="revenue-row">
       <label>02:00 PM – 04:00 PM</label>
-      <div class="revenue-input-wrap"><span>$</span><input type="number" class="rev" id="r3" value="0" min="0" step="0.01"></div>
+      <div class="revenue-right">
+        <span class="rev-total" id="rt3">$0.00</span>
+        <div class="rev-add-wrap">
+          <span class="dollar">$</span>
+          <input type="number" class="rev-add-input" id="ra3" min="0" step="0.01" placeholder="0.00">
+          <button class="rev-add-btn" onclick="addRevenue(3)">+</button>
+        </div>
+        <button class="rev-clear-btn" onclick="clearRevenue(3)" title="Clear slot">✕</button>
+      </div>
     </div>
+
     <div class="revenue-row">
       <label>04:00 PM – 06:00 PM</label>
-      <div class="revenue-input-wrap"><span>$</span><input type="number" class="rev" id="r4" value="0" min="0" step="0.01"></div>
+      <div class="revenue-right">
+        <span class="rev-total" id="rt4">$0.00</span>
+        <div class="rev-add-wrap">
+          <span class="dollar">$</span>
+          <input type="number" class="rev-add-input" id="ra4" min="0" step="0.01" placeholder="0.00">
+          <button class="rev-add-btn" onclick="addRevenue(4)">+</button>
+        </div>
+        <button class="rev-clear-btn" onclick="clearRevenue(4)" title="Clear slot">✕</button>
+      </div>
     </div>
+
     <div class="revenue-row">
       <label>06:00 PM – 08:00 PM</label>
-      <div class="revenue-input-wrap"><span>$</span><input type="number" class="rev" id="r5" value="0" min="0" step="0.01"></div>
+      <div class="revenue-right">
+        <span class="rev-total" id="rt5">$0.00</span>
+        <div class="rev-add-wrap">
+          <span class="dollar">$</span>
+          <input type="number" class="rev-add-input" id="ra5" min="0" step="0.01" placeholder="0.00">
+          <button class="rev-add-btn" onclick="addRevenue(5)">+</button>
+        </div>
+        <button class="rev-clear-btn" onclick="clearRevenue(5)" title="Clear slot">✕</button>
+      </div>
     </div>
+
     <div class="revenue-row">
       <label>08:00 PM – 09:00 PM</label>
-      <div class="revenue-input-wrap"><span>$</span><input type="number" class="rev" id="r6" value="0" min="0" step="0.01"></div>
+      <div class="revenue-right">
+        <span class="rev-total" id="rt6">$0.00</span>
+        <div class="rev-add-wrap">
+          <span class="dollar">$</span>
+          <input type="number" class="rev-add-input" id="ra6" min="0" step="0.01" placeholder="0.00">
+          <button class="rev-add-btn" onclick="addRevenue(6)">+</button>
+        </div>
+        <button class="rev-clear-btn" onclick="clearRevenue(6)" title="Clear slot">✕</button>
+      </div>
     </div>
+
     <div class="total-revenue-row">
       <span>Daily Total Revenue</span>
       <span class="total-value" id="dailyTotal">$0.00</span>
@@ -565,6 +679,43 @@
     saveState();
   }
 
+  // ── Revenue slot totals (accumulated, not typed directly) ──
+  const revTotals = [0, 0, 0, 0, 0, 0]; // indices 0–5 map to slots 1–6
+
+  function addRevenue(slot) {
+    const input = document.getElementById('ra' + slot);
+    const amount = parseFloat(input.value);
+    if (!amount || amount <= 0) return;
+    revTotals[slot - 1] = Math.round((revTotals[slot - 1] + amount) * 100) / 100;
+    input.value = '';
+    input.focus();
+    renderRevTotals();
+    saveState();
+  }
+
+  function clearRevenue(slot) {
+    revTotals[slot - 1] = 0;
+    renderRevTotals();
+    saveState();
+  }
+
+  function renderRevTotals() {
+    let total = 0;
+    revTotals.forEach((v, i) => {
+      document.getElementById('rt' + (i + 1)).textContent = '$' + v.toFixed(2);
+      total += v;
+    });
+    total = Math.round(total * 100) / 100;
+    document.getElementById('dailyTotal').textContent = '$' + total.toFixed(2);
+    document.getElementById('totalRevenue').textContent = '$' + total.toFixed(2);
+    return total;
+  }
+
+  // Allow pressing Enter on the add input to trigger +
+  document.querySelectorAll('.rev-add-input').forEach((el, i) => {
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') addRevenue(i + 1); });
+  });
+
   // ── localStorage persistence ──────────────────────────────
   const STORAGE_KEY = 'shokz-tracker-v1';
 
@@ -572,7 +723,7 @@
     const state = {
       date: document.getElementById('date').value,
       shiftTime: document.getElementById('shiftTime').value,
-      revenue: Array.from(document.querySelectorAll('.rev')).map(el => el.value),
+      revenue: [...revTotals],
       units: Array.from(document.querySelectorAll('.stepper-val.units')).map(el => el.textContent),
       gsp: Array.from(document.querySelectorAll('.stepper-val.gsp')).map(el => el.textContent),
     };
@@ -586,8 +737,7 @@
       const s = JSON.parse(raw);
       if (s.date) document.getElementById('date').value = s.date;
       if (s.shiftTime) document.getElementById('shiftTime').value = s.shiftTime;
-      const revEls = document.querySelectorAll('.rev');
-      (s.revenue || []).forEach((v, i) => { if (revEls[i]) revEls[i].value = v; });
+      (s.revenue || []).forEach((v, i) => { revTotals[i] = v || 0; });
       const unitEls = document.querySelectorAll('.stepper-val.units');
       (s.units || []).forEach((v, i) => { if (unitEls[i]) unitEls[i].textContent = v; });
       const gspEls = document.querySelectorAll('.stepper-val.gsp');
@@ -603,12 +753,7 @@
   }
 
   function calcRevenue() {
-    const inputs = document.querySelectorAll('.rev');
-    let total = 0;
-    inputs.forEach(i => total += parseFloat(i.value) || 0);
-    document.getElementById('dailyTotal').textContent = '$' + total.toFixed(2);
-    document.getElementById('totalRevenue').textContent = '$' + total.toFixed(2);
-    return total;
+    return renderRevTotals();
   }
 
   function calcProducts() {
@@ -620,7 +765,6 @@
     return { units, gsp };
   }
 
-  document.querySelectorAll('.rev').forEach(el => el.addEventListener('input', () => { calcRevenue(); saveState(); }));
   document.getElementById('date').addEventListener('change', saveState);
   document.getElementById('shiftTime').addEventListener('input', saveState);
 
@@ -639,14 +783,12 @@
 
     const slots = ['10:00 AM – 12:00 PM','12:00 PM – 02:00 PM','02:00 PM – 04:00 PM',
                    '04:00 PM – 06:00 PM','06:00 PM – 08:00 PM','08:00 PM – 09:00 PM'];
-    const revInputs = document.querySelectorAll('.rev');
     const unitInputs = document.querySelectorAll('.stepper-val.units');
     const gspInputs = document.querySelectorAll('.stepper-val.gsp');
 
     let revenueLines = '';
     slots.forEach((s, i) => {
-      const val = parseFloat(revInputs[i].value) || 0;
-      revenueLines += `  ${s}: $${val.toFixed(2)}\n`;
+      revenueLines += `  ${s}: $${(revTotals[i] || 0).toFixed(2)}\n`;
     });
 
     let productLines = '';
@@ -700,7 +842,8 @@ ${productLines}
     localStorage.removeItem(STORAGE_KEY);
     document.getElementById('date').value = new Date().toISOString().split('T')[0];
     document.getElementById('shiftTime').value = '';
-    document.querySelectorAll('.rev').forEach(i => i.value = 0);
+    revTotals.fill(0);
+    renderRevTotals();
     document.querySelectorAll('.stepper-val').forEach(el => el.textContent = 0);
     calcRevenue();
     calcProducts();
