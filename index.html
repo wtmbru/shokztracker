@@ -417,6 +417,189 @@
     margin-bottom: 16px;
   }
 
+  /* ── Tab navigation ───────────────────────────────────── */
+  .tab-nav {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 24px;
+    background: #111;
+    border: 1px solid #1e1e1e;
+    border-radius: 10px;
+    padding: 4px;
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 10px;
+    background: transparent;
+    border: none;
+    border-radius: 7px;
+    color: #666;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .tab-btn.active {
+    background: #1e6fff;
+    color: #fff;
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── Compare panel ────────────────────────────────────── */
+  .compare-selectors {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .compare-selectors select {
+    width: 100%;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    color: #fff;
+    padding: 9px 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .compare-selectors select:focus { border-color: #1e6fff; }
+
+  .compare-grid {
+    display: grid;
+    gap: 10px;
+  }
+
+  .compare-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .compare-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+  .compare-card {
+    background: #0d0d0d;
+    border: 1px solid #222;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .compare-card-header {
+    background: #1e6fff;
+    padding: 12px 14px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+  }
+
+  .compare-card-body { padding: 0; }
+
+  .spec-row {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 14px;
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  .spec-row:last-child { border-bottom: none; }
+
+  .spec-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #555;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+
+  .spec-value {
+    font-size: 0.82rem;
+    color: #ddd;
+    font-weight: 500;
+  }
+
+  .spec-value.highlight { color: #4ade80; }
+  .spec-value.tag {
+    display: inline-block;
+    background: #1a2a1a;
+    color: #4ade80;
+    border-radius: 4px;
+    padding: 1px 7px;
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+  .spec-value.tag.blue {
+    background: #0d1a3a;
+    color: #60a5fa;
+  }
+
+  .compare-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #444;
+    font-size: 0.82rem;
+  }
+
+  /* ── Full spec table ──────────────────────────────────── */
+  .spec-table-wrap {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid #1e1e1e;
+  }
+
+  table.spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+    min-width: 600px;
+  }
+
+  .spec-table th {
+    background: #0d0d0d;
+    color: #1e6fff;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid #222;
+    white-space: nowrap;
+  }
+
+  .spec-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid #181818;
+    color: #ccc;
+    vertical-align: top;
+  }
+
+  .spec-table tr:last-child td { border-bottom: none; }
+
+  .spec-table tr:hover td { background: #131313; }
+
+  .spec-table td:first-child {
+    color: #fff;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .pill {
+    display: inline-block;
+    border-radius: 4px;
+    padding: 1px 7px;
+    font-size: 0.68rem;
+    font-weight: 700;
+  }
+  .pill-blue  { background: #0d1a3a; color: #60a5fa; }
+  .pill-green { background: #0d2a1a; color: #4ade80; }
+  .pill-amber { background: #2a1a0d; color: #fb923c; }
+
   .modal textarea {
     flex: 1;
     background: #0d0d0d;
@@ -482,6 +665,15 @@
     <h1>Shokz VPL Daily Performance Tracker</h1>
     <p>Product &amp; Protection Tally Matrix</p>
   </header>
+
+  <!-- Tab Navigation -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('tracker')">Sales Tracker</button>
+    <button class="tab-btn" onclick="switchTab('compare')">Product Compare</button>
+  </div>
+
+  <!-- ── TRACKER TAB ───────────────────────────────────── -->
+  <div class="tab-panel active" id="tab-tracker">
 
   <div class="meta-row">
     <div class="field-group">
@@ -618,6 +810,30 @@
   <button class="export-btn" onclick="openExport()">Export Day Summary</button>
   <button class="reset-btn" onclick="resetAll()">Reset All Fields</button>
 
+  </div><!-- end tab-tracker -->
+
+  <!-- ── COMPARE TAB ───────────────────────────────────── -->
+  <div class="tab-panel" id="tab-compare">
+
+    <section>
+      <h2>Side-by-Side Comparison</h2>
+      <div class="compare-selectors">
+        <select id="cmp1" onchange="renderCompare()"><option value="">— Product 1 —</option></select>
+        <select id="cmp2" onchange="renderCompare()"><option value="">— Product 2 —</option></select>
+        <select id="cmp3" onchange="renderCompare()"><option value="">— Product 3 —</option></select>
+      </div>
+      <div id="compareOutput"><div class="compare-empty">Select up to 3 products above to compare them.</div></div>
+    </section>
+
+    <section>
+      <h2>Full Spec Sheet</h2>
+      <div class="spec-table-wrap">
+        <table class="spec-table" id="specTable"></table>
+      </div>
+    </section>
+
+  </div><!-- end tab-compare -->
+
 </div>
 
 <!-- Export Modal -->
@@ -634,19 +850,289 @@
 </div>
 
 <script>
+  // ── Tab switching ─────────────────────────────────────
+  function switchTab(name) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      if (b.textContent.toLowerCase().includes(name === 'tracker' ? 'sales' : 'compare')) b.classList.add('active');
+    });
+  }
+
+  // ── Product list ──────────────────────────────────────
   const PRODUCTS = [
     "OpenFit Air",
     "OpenFit 2+",
     "OpenFit Pro",
     "OpenRun Pro 2",
     "OpenRun Pro 2 Mini",
-    "OpenRun / OpenRun Mini",
+    "OpenRun",
+    "OpenRun Mini",
     "OpenSwim Pro",
     "OpenComm 2",
     "OpenDots ONE",
     "OpenDots 2",
     "OpenDots Air",
   ];
+
+  // ── Spec data (verified from shokz.com) ──────────────
+  const SPECS = {
+    "OpenFit Air": {
+      type: "Open-Ear (Ear-Hook)",
+      bestFor: "Everyday / Casual",
+      battery: "6 hr (28 hr with case)",
+      water: "IP54 — Splash resistant",
+      bluetooth: "5.2",
+      mic: "Yes — Dual AI Noise-Canceling",
+      boneConduction: "No",
+      anc: "No",
+      storage: "No",
+      highlight: "DirectPitch™ lightweight ear-hook design",
+      url: "https://www.bestbuy.com/product/shokz-openfit-air-open-ear-true-wireless-earbuds-black/J3GW298P46",
+    },
+    "OpenFit 2+": {
+      type: "Open-Ear (Ear-Hook)",
+      bestFor: "Sport / Everyday",
+      battery: "11 hr (48 hr with case)",
+      water: "IP55 — Sweat & water resistant",
+      bluetooth: "5.4",
+      mic: "Yes — Dual AI Noise-Canceling",
+      boneConduction: "No",
+      anc: "No",
+      storage: "No",
+      highlight: "DualBoost™ + DirectPitch™ + Dolby Audio",
+      url: "https://www.bestbuy.com/product/shokz-openfit-2-open-ear-true-wireless-bluetooth-earbuds-stone-blue/J3GWSKCFCW",
+    },
+    "OpenFit Pro": {
+      type: "Open-Ear (Ear-Hook)",
+      bestFor: "Travel / Everyday",
+      battery: "12 hr ANC off (50 hr w/ case) / 6 hr ANC on (24 hr w/ case)",
+      water: "IP55 — Sweat & water resistant",
+      bluetooth: "6.1",
+      mic: "Yes — Triple AI Noise-Canceling & Wind-Resistant",
+      boneConduction: "No",
+      anc: "Yes",
+      storage: "No",
+      highlight: "Only open-ear with ANC — Shokz SuperBoost™",
+      url: "https://www.bestbuy.com/product/shokz-openfit-pro-open-ear-true-wireless-bluetooth-active-noise-reduction-earbuds-black/J3GWRW4HCC",
+    },
+    "OpenRun Pro 2": {
+      type: "Bone Conduction (Neckband)",
+      bestFor: "Sport / Running",
+      battery: "12 hr",
+      water: "IP55 — Sweat & water resistant",
+      bluetooth: "5.3",
+      mic: "Yes — Dual AI Noise-Canceling & Wind-Resistant",
+      boneConduction: "Yes",
+      anc: "No",
+      storage: "No",
+      highlight: "10th-Gen DualPitch™, 6 EQ presets, USB-C",
+      url: "https://www.bestbuy.com/product/shokz-openrun-pro-2-wireless-bone-conduction-open-ear-bluetooth-sports-headphones-black/J3GW298S85",
+    },
+    "OpenRun Pro 2 Mini": {
+      type: "Bone Conduction (Neckband)",
+      bestFor: "Sport / Running — smaller fit",
+      battery: "12 hr",
+      water: "IP55 — Sweat & water resistant",
+      bluetooth: "5.3",
+      mic: "Yes — Dual AI Noise-Canceling & Wind-Resistant",
+      boneConduction: "Yes",
+      anc: "No",
+      storage: "No",
+      highlight: "Same as OpenRun Pro 2 — Mini frame for smaller heads",
+      url: "https://www.bestbuy.com/product/shokz-openrun-pro-2-mini-wireless-bone-conduction-open-ear-bluetooth-sports-headphones-black/J3GW2989PR",
+    },
+    "OpenRun": {
+      type: "Bone Conduction (Neckband)",
+      bestFor: "Sport / Running",
+      battery: "8 hr",
+      water: "IP67 — Waterproof (not for swimming)",
+      bluetooth: "5.1",
+      mic: "Yes — Dual Noise-Canceling",
+      boneConduction: "Yes",
+      anc: "No",
+      storage: "No",
+      highlight: "8th-Gen PremiumPitch™ 2.0+, IP67 waterproof",
+      url: "https://www.bestbuy.com/product/shokz-openrun-wireless-bone-conduction-open-ear-bluetooth-endurance-headphones-black/J3R8WS6R5G",
+    },
+    "OpenRun Mini": {
+      type: "Bone Conduction (Neckband)",
+      bestFor: "Sport / Running — smaller fit",
+      battery: "8 hr",
+      water: "IP67 — Waterproof (not for swimming)",
+      bluetooth: "5.1",
+      mic: "Yes — Dual Noise-Canceling",
+      boneConduction: "Yes",
+      anc: "No",
+      storage: "No",
+      highlight: "Same as OpenRun — Mini frame for smaller heads",
+      url: "https://www.bestbuy.com/product/shokz-openrun-mini-wireless-bone-conduction-open-ear-bluetooth-endurance-headphones-black/J3R8WS6RVS",
+    },
+    "OpenSwim Pro": {
+      type: "Bone Conduction (Neckband)",
+      bestFor: "Swimming / Water Sports",
+      battery: "9 hr BT / 6 hr MP3",
+      water: "IP68 — Swimproof up to 2m",
+      bluetooth: "5.4",
+      mic: "Yes — Dual AI Noise-Canceling (BT mode)",
+      boneConduction: "Yes",
+      anc: "No",
+      storage: "Yes — 32 GB MP3",
+      highlight: "IP68 swimproof + 32 GB onboard MP3 storage",
+      url: "https://www.bestbuy.com/product/shokz-openswim-pro-wireless-bone-conduction-open-ear-bluetooth-sports-headphones-gray/J3GW298PWZ",
+    },
+    "OpenComm 2": {
+      type: "Bone Conduction (Neckband)",
+      bestFor: "Office / Calls",
+      battery: "8 hr music / 16 hr talk time",
+      water: "IP55 — Sweat & water resistant",
+      bluetooth: "5.1",
+      mic: "Yes — Dual Noise-Canceling Boom Mic",
+      boneConduction: "Yes",
+      anc: "No",
+      storage: "No",
+      highlight: "Boom mic + 98 ft wireless range, all-day comfort",
+      url: "https://www.bestbuy.com/product/shokz-opencomm2-bone-conduction-stereo-bluetooth-headset-2025-upgrade-black/J3GWPSGSXG",
+    },
+    "OpenDots ONE": {
+      type: "Open-Ear (Ear-Clip)",
+      bestFor: "Everyday",
+      battery: "10 hr (40 hr with case)",
+      water: "IP54 — Splash resistant",
+      bluetooth: "5.4",
+      mic: "Yes — Dual AI Noise-Canceling",
+      boneConduction: "No",
+      anc: "No",
+      storage: "No",
+      highlight: "Bassphere™ + DirectPitch™ + Dolby Audio",
+      url: "https://www.bestbuy.com/product/shokz-opendots-one-open-ear-clip-on-true-wireless-bluetooth-earbuds-navy-blue/J3GWRW4QT7",
+    },
+    "OpenDots 2": {
+      type: "Open-Ear (Ear-Clip)",
+      bestFor: "Everyday / Sport",
+      battery: "10 hr (40 hr with case)",
+      water: "IP57 — Waterproof earbuds / IP54 case",
+      bluetooth: "6.1",
+      mic: "Yes — Triple AI Noise-Canceling",
+      boneConduction: "No",
+      anc: "No",
+      storage: "No",
+      highlight: "Bassphere™ 2.0 + Dolby Audio + upgraded touch controls",
+      url: "https://www.bestbuy.com/product/shokz-opendots-2-open-ear-clip-on-true-wireless-bluetooth-earbuds-black/J3GWRW577F",
+    },
+    "OpenDots Air": {
+      type: "Open-Ear (Ear-Clip)",
+      bestFor: "Everyday / Casual",
+      battery: "9 hr (36 hr with case)",
+      water: "IP55 — Sweat & water resistant",
+      bluetooth: "6.1",
+      mic: "Yes — Dual AI Noise-Canceling",
+      boneConduction: "No",
+      anc: "No",
+      storage: "No",
+      highlight: "Bassphere™ + DirectPitch™, lightest clip-on",
+      url: "https://www.bestbuy.com/product/shokz-opendots-air-open-ear-clip-on-true-wireless-bluetooth-earbuds-black/J3GWRW4V4T",
+    },
+  };
+
+  const SPEC_LABELS = {
+    type:          "Type",
+    bestFor:       "Best For",
+    battery:       "Battery",
+    water:         "Water Rating",
+    bluetooth:     "Bluetooth",
+    mic:           "Microphone",
+    boneConduction:"Bone Conduction",
+    anc:           "ANC",
+    storage:       "Onboard Storage",
+    highlight:     "Key Feature",
+  };
+
+  // ── Populate compare dropdowns ────────────────────────
+  ['cmp1','cmp2','cmp3'].forEach(id => {
+    const sel = document.getElementById(id);
+    PRODUCTS.forEach(name => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      sel.appendChild(opt);
+    });
+  });
+
+  // ── Build full spec table ─────────────────────────────
+  (function buildSpecTable() {
+    const table = document.getElementById('specTable');
+    const keys = Object.keys(SPEC_LABELS);
+
+    // Header row
+    const thead = document.createElement('thead');
+    const hr = document.createElement('tr');
+    const thBlank = document.createElement('th');
+    thBlank.textContent = 'Spec';
+    hr.appendChild(thBlank);
+    PRODUCTS.forEach(name => {
+      const th = document.createElement('th');
+      th.textContent = name;
+      hr.appendChild(th);
+    });
+    thead.appendChild(hr);
+    table.appendChild(thead);
+
+    // Body rows
+    const tbody = document.createElement('tbody');
+    keys.forEach(key => {
+      const tr = document.createElement('tr');
+      const tdLabel = document.createElement('td');
+      tdLabel.textContent = SPEC_LABELS[key];
+      tdLabel.style.color = '#888';
+      tdLabel.style.fontWeight = '600';
+      tr.appendChild(tdLabel);
+      PRODUCTS.forEach(name => {
+        const td = document.createElement('td');
+        const val = SPECS[name]?.[key] ?? '—';
+        if (val === 'Yes') td.innerHTML = '<span class="pill pill-green">Yes</span>';
+        else if (val === 'No') td.innerHTML = '<span style="color:#444">No</span>';
+        else td.textContent = val;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+  })();
+
+  // ── Side-by-side compare render ───────────────────────
+  function renderCompare() {
+    const selected = ['cmp1','cmp2','cmp3']
+      .map(id => document.getElementById(id).value)
+      .filter(Boolean);
+
+    const out = document.getElementById('compareOutput');
+    if (selected.length === 0) {
+      out.innerHTML = '<div class="compare-empty">Select up to 3 products above to compare them.</div>';
+      return;
+    }
+
+    const keys = Object.keys(SPEC_LABELS);
+    const cols = selected.length;
+    out.innerHTML = `<div class="compare-grid cols-${cols}">` +
+      selected.map(name => {
+        const s = SPECS[name];
+        const rows = keys.map(key => {
+          const val = s[key] ?? '—';
+          let display;
+          if (val === 'Yes') display = `<span class="spec-value tag">Yes</span>`;
+          else if (val === 'No') display = `<span class="spec-value" style="color:#444">No</span>`;
+          else if (key === 'highlight') display = `<span class="spec-value tag blue">${val}</span>`;
+          else display = `<span class="spec-value">${val}</span>`;
+          return `<div class="spec-row"><span class="spec-label">${SPEC_LABELS[key]}</span>${display}</div>`;
+        }).join('');
+        return `<div class="compare-card">
+          <div class="compare-card-header"><a href="${s.url}" target="_blank" style="color:#fff;text-decoration:none">${name} ↗</a></div>
+          <div class="compare-card-body">${rows}</div>
+        </div>`;
+      }).join('') + '</div>';
+  }
 
   // Build product rows with stepper controls
   const list = document.getElementById('productList');
@@ -717,7 +1203,7 @@
   });
 
   // ── localStorage persistence ──────────────────────────────
-  const STORAGE_KEY = 'shokz-tracker-v1';
+  const STORAGE_KEY = 'shokz-tracker-v2';
 
   function saveState() {
     const state = {
